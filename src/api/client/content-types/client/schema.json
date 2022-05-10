@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "clients",
+  "info": {
+    "singularName": "client",
+    "pluralName": "clients",
+    "displayName": "Client"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "description": {
+      "type": "string"
+    },
+    "code": {
+      "type": "decimal"
+    },
+    "cnpj": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "accounts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::account.account",
+      "mappedBy": "client"
+    },
+    "furnishers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::furnisher.furnisher",
+      "mappedBy": "client"
+    },
+    "histories": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::history.history",
+      "mappedBy": "client"
+    }
+  }
+}

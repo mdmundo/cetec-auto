@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "furnishers",
+  "info": {
+    "singularName": "furnisher",
+    "pluralName": "furnishers",
+    "displayName": "Furnisher"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "description": {
+      "type": "string"
+    },
+    "code": {
+      "type": "decimal"
+    },
+    "client": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::client.client",
+      "inversedBy": "furnishers"
+    }
+  }
+}
