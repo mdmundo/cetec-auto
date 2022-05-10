@@ -17,7 +17,7 @@
     "better-sqlite3": "7.4.6"
   },
   "author": {
-    "name": "A Strapi developer"
+    "name": "Edmundo Paulino <manyymoore@gmail.com>"
   },
   "strapi": {
     "uuid": "5c0e3f15-3887-4c97-be7c-2f8273953b98"
