@@ -4,7 +4,8 @@
   "info": {
     "singularName": "furnisher",
     "pluralName": "furnishers",
-    "displayName": "Furnisher"
+    "displayName": "Furnisher",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -15,7 +16,7 @@
       "type": "string"
     },
     "code": {
-      "type": "decimal"
+      "type": "integer"
     },
     "client": {
       "type": "relation",
