@@ -16,13 +16,17 @@
       "type": "string"
     },
     "code": {
-      "type": "integer"
+      "type": "integer",
+      "required": true,
+      "unique": true
     },
     "cnpj": {
       "type": "string"
     },
     "email": {
-      "type": "email"
+      "type": "email",
+      "required": true,
+      "unique": true
     },
     "accounts": {
       "type": "relation",

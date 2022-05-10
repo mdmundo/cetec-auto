@@ -13,10 +13,12 @@
   "pluginOptions": {},
   "attributes": {
     "description": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "code": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "client": {
       "type": "relation",
