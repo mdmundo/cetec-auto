@@ -5,6 +5,7 @@
  */
 
 const { createCoreController } = require("@strapi/strapi").factories;
+const { parseMultipartData, sanitize } = require("@strapi/utils");
 
 module.exports = createCoreController("api::client.client", ({ strapi }) => ({
   async profile(ctx) {
@@ -40,6 +41,13 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
 
         if (entry) return entry;
       }
+    } catch (err) {
+      return err;
+    }
+  },
+  async createWithXLSX(ctx) {
+    try {
+      return "ok";
     } catch (err) {
       return err;
     }

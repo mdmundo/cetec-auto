@@ -12,5 +12,10 @@ module.exports = {
       path: "/custom/:code",
       handler: "client.findOneByCode",
     },
+    {
+      method: "POST",
+      path: "/custom",
+      handler: "client.createWithXLSX",
+    },
   ],
 };
