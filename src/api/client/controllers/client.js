@@ -12,17 +12,37 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
       const email = ctx.state?.user?.email;
 
       if (email) {
+        ctx.query = {
+          populate: "*",
+          filters: { email: { $eq: email } },
+        };
+
+        const {
+          data: [data],
+        } = await super.find(ctx);
+
+        return data;
+      }
+    } catch (err) {
+      return err;
+    }
+  },
+  async findOneByCode(ctx) {
+    try {
+      const { code } = ctx.params;
+
+      if (code) {
         const entry = await strapi.db.query("api::client.client").findOne({
           select: ["email"],
-          where: { email },
+          where: { code },
         });
 
         if (entry) {
-          ctx.body = entry;
+          return entry;
         }
       }
     } catch (err) {
-      ctx.body = err;
+      return err;
     }
   },
 }));

@@ -7,5 +7,10 @@ module.exports = {
       path: "/custom/me",
       handler: "client.profile",
     },
+    {
+      method: "GET",
+      path: "/custom/:code",
+      handler: "client.findOneByCode",
+    },
   ],
 };
