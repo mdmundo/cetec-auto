@@ -58,10 +58,6 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
             files.historicosContabeis.path
           );
 
-          // const hasClient = await strapi.services.client.findOne({
-          //   code: data.code,
-          // });
-
           const hasClient = await strapi.db
             .query("api::client.client")
             .findOne({
@@ -73,13 +69,6 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
           if (!hasClient) {
             const clientDescription = contas.Preamble["F1"].v;
             const clientCNPJ = contas.Preamble["F2"].v;
-
-            // const client = await strapi.services.client.create({
-            //   code: data.code,
-            //   email: data.email,
-            //   description: clientDescription,
-            //   cnpj: clientCNPJ,
-            // });
 
             const client = await strapi.entityService.create(
               "api::client.client",
@@ -101,11 +90,6 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
 
             return hasClient.id;
           } else if (!!hasClient) {
-            // const client = await strapi.services.client.update(
-            //   { id: hasClient.id },
-            //   { email: data.email }
-            // );
-
             const client = await strapi.entityService.update(
               "api::client.client",
               hasClient.id,
