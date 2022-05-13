@@ -99,7 +99,6 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         }
       }
     } catch (err) {
-      console.log(err);
       return err;
     }
   },
