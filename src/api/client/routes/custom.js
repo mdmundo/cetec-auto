@@ -15,7 +15,7 @@ module.exports = {
     {
       method: "POST",
       path: "/custom",
-      handler: "client.createWithXLSX",
+      handler: "client.createWithSheets",
     },
   ],
 };
