@@ -82,8 +82,7 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
               }
             );
 
-            // await populateFromSheets(contas, historicosContabeis, client);
-            return "create";
+            await populateFromSheets(contas, historicosContabeis, client);
 
             return client.id;
           } else if (!matchEmail) {
@@ -93,13 +92,11 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
               { data: { email: data.email } }
             );
 
-            // await populateFromSheets(contas, historicosContabeis, client);
-            return "update";
+            await populateFromSheets(contas, historicosContabeis, client);
 
             return client.id;
           } else {
-            // await populateFromSheets(contas, historicosContabeis, hasClient);
-            return "nothing";
+            await populateFromSheets(contas, historicosContabeis, hasClient);
 
             return hasClient.id;
           }
@@ -114,10 +111,10 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         //   client: client.id,
         // });
 
-        const dbAccounts = await strapi.entityService.findMany(
-          "api::account.account",
-          { filters: { client: client.id }, sort: { code: "ASC" } }
-        );
+        // const dbAccounts = await strapi.entityService.findMany(
+        //   "api::account.account",
+        //   { filters: { client: client.id }, sort: { code: "ASC" } }
+        // );
 
         const sheetAccounts = Array.from(
           { length: contas.Preamble["!rows"].length },
@@ -127,27 +124,26 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
             ) && {
               code: contas.Preamble[`A${i + 1}`].v,
               description: contas.Preamble[`P${i + 1}`].v,
-              client: client.id,
             }
         ).filter((account) => account?.code && account?.description);
 
-        const toInsertAccounts = sheetAccounts.filter(
-          ({ code: codeA }) =>
-            !dbAccounts.some(({ code: codeB }) => codeA === codeB)
-        );
+        // const toInsertAccounts = sheetAccounts.filter(
+        //   ({ code: codeA }) =>
+        //     !dbAccounts.some(({ code: codeB }) => codeA === codeB)
+        // );
 
-        if (toInsertAccounts.length !== 0) {
-          // await strapi
-          //   .query("account")
-          //   .model.query((qb) => {
-          //     qb.insert(toInsertAccounts);
-          //   })
-          //   .fetch();
+        // if (sheetAccounts.length !== 0) {
+        // await strapi
+        //   .query("account")
+        //   .model.query((qb) => {
+        //     qb.insert(toInsertAccounts);
+        //   })
+        //   .fetch();
 
-          await strapi.db.query("api::account.account").createMany({
-            data: toInsertAccounts,
-          });
-        }
+        // await strapi.db.query("api::account.account").createMany({
+        //   data: toInsertAccounts,
+        // });
+        // }
 
         // Fornecedor
         // const dbFurnishers = await strapi.services.furnisher.find({
@@ -156,10 +152,10 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         //   client: client.id,
         // });
 
-        const dbFurnishers = await strapi.entityService.findMany(
-          "api::furnisher.furnisher",
-          { filters: { client: client.id }, sort: { code: "ASC" } }
-        );
+        // const dbFurnishers = await strapi.entityService.findMany(
+        //   "api::furnisher.furnisher",
+        //   { filters: { client: client.id }, sort: { code: "ASC" } }
+        // );
 
         const sheetFurnishers = Array.from(
           { length: contas.Preamble["!rows"].length },
@@ -169,27 +165,26 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
             ) && {
               code: contas.Preamble[`A${i + 1}`].v,
               description: contas.Preamble[`P${i + 1}`].v,
-              client: client.id,
             }
         ).filter((furnisher) => furnisher?.code && furnisher?.description);
 
-        const toInsertFurnishers = sheetFurnishers.filter(
-          ({ code: codeA }) =>
-            !dbFurnishers.some(({ code: codeB }) => codeA === codeB)
-        );
+        // const toInsertFurnishers = sheetFurnishers.filter(
+        //   ({ code: codeA }) =>
+        //     !dbFurnishers.some(({ code: codeB }) => codeA === codeB)
+        // );
 
-        if (toInsertFurnishers.length !== 0) {
-          // await strapi
-          //   .query("furnisher")
-          //   .model.query((qb) => {
-          //     qb.insert(toInsertFurnishers);
-          //   })
-          //   .fetch();
+        // if (toInsertFurnishers.length !== 0) {
+        // await strapi
+        //   .query("furnisher")
+        //   .model.query((qb) => {
+        //     qb.insert(toInsertFurnishers);
+        //   })
+        //   .fetch();
 
-          await strapi.db.query("api::furnisher.furnisher").createMany({
-            data: toInsertFurnishers,
-          });
-        }
+        //   await strapi.db.query("api::furnisher.furnisher").createMany({
+        //     data: toInsertFurnishers,
+        //   });
+        // }
 
         // Histórico
         // const dbHistories = await strapi.services.history.find({
@@ -198,10 +193,10 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         //   client: client.id,
         // });
 
-        const dbHistories = await strapi.entityService.findMany(
-          "api::history.history",
-          { filters: { client: client.id }, sort: { code: "ASC" } }
-        );
+        // const dbHistories = await strapi.entityService.findMany(
+        //   "api::history.history",
+        //   { filters: { client: client.id }, sort: { code: "ASC" } }
+        // );
 
         const sheetHistories = Array.from(
           { length: historicosContabeis.Preamble["!rows"].length },
@@ -209,33 +204,37 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
             !isNaN(historicosContabeis.Preamble[`A${i + 1}`]?.v) && {
               code: historicosContabeis.Preamble[`A${i + 1}`].v,
               description: historicosContabeis.Preamble[`C${i + 1}`].v,
-              client: client.id,
             }
         ).filter((history) => history?.code && history?.description);
 
-        const toInsertHistories = sheetHistories.filter(
-          ({ code: codeA }) =>
-            !dbHistories.some(({ code: codeB }) => codeA === codeB)
-        );
+        // const toInsertHistories = sheetHistories.filter(
+        //   ({ code: codeA }) =>
+        //     !dbHistories.some(({ code: codeB }) => codeA === codeB)
+        // );
 
-        if (toInsertHistories.length !== 0) {
-          // await strapi
-          //   .query("history")
-          //   .model.query((qb) => {
-          //     qb.insert(toInsertHistories);
-          //   })
-          //   .fetch();
+        // if (toInsertHistories.length !== 0) {
+        // await strapi
+        //   .query("history")
+        //   .model.query((qb) => {
+        //     qb.insert(toInsertHistories);
+        //   })
+        //   .fetch();
 
-          await strapi.db.query("api::history.history").createMany({
-            data: toInsertHistories,
-          });
-        }
+        //   await strapi.db.query("api::history.history").createMany({
+        //     data: toInsertHistories,
+        //   });
+        // }
+
+        await strapi.entityService.update("api::client.client", client.id, {
+          data: {
+            accounts: sheetAccounts,
+            furnishers: sheetFurnishers,
+            histories: sheetHistories,
+          },
+        });
       }
     } catch (err) {
-      console.log(
-        "🚀 ~ file: client.js ~ line 204 ~ createWithXLSX ~ err",
-        err
-      );
+      console.log(err);
       return err;
     }
   },
