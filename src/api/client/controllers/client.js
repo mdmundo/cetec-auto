@@ -20,7 +20,8 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         if (entry) return entry;
       }
     } catch (err) {
-      return err;
+      console.error(err);
+      throw new Error("Could'nt fetch profile");
     }
   },
   async findOneByCode(ctx) {
@@ -36,7 +37,8 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         if (entry) return entry;
       }
     } catch (err) {
-      return err;
+      console.error(err);
+      throw new Error("Could'nt find client");
     }
   },
   async createWithSheets(ctx) {
@@ -99,7 +101,8 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         }
       }
     } catch (err) {
-      return err;
+      console.error(err);
+      throw new Error("Could'nt create client");
     }
   },
 }));
