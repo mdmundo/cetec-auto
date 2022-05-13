@@ -50,8 +50,13 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
       if (ctx.is("multipart")) {
         const { data, files } = parseMultipartData(ctx);
 
-        // É obrigatório o envio do email e do code.
-        if (data.code && data.email) {
+        // É obrigatório o envio dos dados abaixo
+        if (
+          data.code &&
+          data.email &&
+          files.contas &&
+          files.historicosContabeis
+        ) {
           const hasClient = await strapi.db
             .query("api::client.client")
             .findOne({
