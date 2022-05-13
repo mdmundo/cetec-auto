@@ -29,22 +29,13 @@
       "unique": true
     },
     "accounts": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::account.account",
-      "mappedBy": "client"
+      "type": "json"
     },
     "furnishers": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::furnisher.furnisher",
-      "mappedBy": "client"
+      "type": "json"
     },
     "histories": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::history.history",
-      "mappedBy": "client"
+      "type": "json"
     }
   }
 }
