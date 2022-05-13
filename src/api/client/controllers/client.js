@@ -66,6 +66,11 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
 
           const matchEmail = hasClient?.email === data.email;
 
+          const { accounts, furnishers, histories } = await populateFromSheets(
+            contas,
+            historicosContabeis
+          );
+
           if (!hasClient) {
             const clientDescription = contas.Preamble["F1"].v;
             const clientCNPJ = contas.Preamble["F2"].v;
@@ -82,7 +87,13 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
               }
             );
 
-            await populateFromSheets(contas, historicosContabeis, client);
+            await strapi.entityService.update("api::client.client", client.id, {
+              data: {
+                accounts,
+                furnishers,
+                histories,
+              },
+            });
 
             return client.id;
           } else if (!matchEmail) {
@@ -92,56 +103,31 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
               { data: { email: data.email } }
             );
 
-            await populateFromSheets(contas, historicosContabeis, client);
+            await strapi.entityService.update("api::client.client", client.id, {
+              data: {
+                accounts,
+                furnishers,
+                histories,
+              },
+            });
 
             return client.id;
           } else {
-            await populateFromSheets(contas, historicosContabeis, hasClient);
+            await strapi.entityService.update(
+              "api::client.client",
+              hasClient.id,
+              {
+                data: {
+                  accounts,
+                  furnishers,
+                  histories,
+                },
+              }
+            );
 
             return hasClient.id;
           }
         }
-      }
-
-      async function populateFromSheets(contas, historicosContabeis, client) {
-        const sheetAccounts = Array.from(
-          { length: contas.Preamble["!rows"].length },
-          (v, i) =>
-            contas.Preamble[`H${i + 1}`]?.v?.match(
-              /^1\.1\.01\.00[1-2]\.\d{3}$/
-            ) && {
-              code: contas.Preamble[`A${i + 1}`].v,
-              description: contas.Preamble[`P${i + 1}`].v,
-            }
-        ).filter((account) => account?.code && account?.description);
-
-        const sheetFurnishers = Array.from(
-          { length: contas.Preamble["!rows"].length },
-          (v, i) =>
-            contas.Preamble[`H${i + 1}`]?.v?.match(
-              /^2\.1\.01\.00[2-6]\.\d{3}$/
-            ) && {
-              code: contas.Preamble[`A${i + 1}`].v,
-              description: contas.Preamble[`P${i + 1}`].v,
-            }
-        ).filter((furnisher) => furnisher?.code && furnisher?.description);
-
-        const sheetHistories = Array.from(
-          { length: historicosContabeis.Preamble["!rows"].length },
-          (v, i) =>
-            !isNaN(historicosContabeis.Preamble[`A${i + 1}`]?.v) && {
-              code: historicosContabeis.Preamble[`A${i + 1}`].v,
-              description: historicosContabeis.Preamble[`C${i + 1}`].v,
-            }
-        ).filter((history) => history?.code && history?.description);
-
-        await strapi.entityService.update("api::client.client", client.id, {
-          data: {
-            accounts: sheetAccounts,
-            furnishers: sheetFurnishers,
-            histories: sheetHistories,
-          },
-        });
       }
     } catch (err) {
       console.log(err);
@@ -149,3 +135,38 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
     }
   },
 }));
+
+const populateFromSheets = async (contas, historicosContabeis) => {
+  const sheetAccounts = Array.from(
+    { length: contas.Preamble["!rows"].length },
+    (v, i) =>
+      contas.Preamble[`H${i + 1}`]?.v?.match(/^1\.1\.01\.00[1-2]\.\d{3}$/) && {
+        code: contas.Preamble[`A${i + 1}`].v,
+        description: contas.Preamble[`P${i + 1}`].v,
+      }
+  ).filter((account) => account?.code && account?.description);
+
+  const sheetFurnishers = Array.from(
+    { length: contas.Preamble["!rows"].length },
+    (v, i) =>
+      contas.Preamble[`H${i + 1}`]?.v?.match(/^2\.1\.01\.00[2-6]\.\d{3}$/) && {
+        code: contas.Preamble[`A${i + 1}`].v,
+        description: contas.Preamble[`P${i + 1}`].v,
+      }
+  ).filter((furnisher) => furnisher?.code && furnisher?.description);
+
+  const sheetHistories = Array.from(
+    { length: historicosContabeis.Preamble["!rows"].length },
+    (v, i) =>
+      !isNaN(historicosContabeis.Preamble[`A${i + 1}`]?.v) && {
+        code: historicosContabeis.Preamble[`A${i + 1}`].v,
+        description: historicosContabeis.Preamble[`C${i + 1}`].v,
+      }
+  ).filter((history) => history?.code && history?.description);
+
+  return {
+    accounts: sheetAccounts,
+    furnishers: sheetFurnishers,
+    histories: sheetHistories,
+  };
+};
