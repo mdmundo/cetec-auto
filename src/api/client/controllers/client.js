@@ -14,13 +14,7 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
 
       if (email) {
         const entry = strapi.db.query("api::client.client").findOne({
-          select: ["id", "description", "code", "cnpj", "email"],
           where: { email },
-          populate: {
-            accounts: { select: ["code", "description"] },
-            furnishers: { select: ["code", "description"] },
-            histories: { select: ["code", "description"] },
-          },
         });
 
         if (entry) return entry;
