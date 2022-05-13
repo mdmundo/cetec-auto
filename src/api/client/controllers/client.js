@@ -82,23 +82,26 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
               }
             );
 
-            await populateFromSheets(contas, historicosContabeis, client);
+            // await populateFromSheets(contas, historicosContabeis, client);
+            return "create";
 
             return client.id;
-          } else if (hasClient && matchEmail) {
-            await populateFromSheets(contas, historicosContabeis, hasClient);
-
-            return hasClient.id;
-          } else if (hasClient) {
+          } else if (!matchEmail) {
             const client = await strapi.entityService.update(
               "api::client.client",
               hasClient.id,
               { data: { email: data.email } }
             );
 
-            await populateFromSheets(contas, historicosContabeis, client);
+            // await populateFromSheets(contas, historicosContabeis, client);
+            return "update";
 
             return client.id;
+          } else {
+            // await populateFromSheets(contas, historicosContabeis, hasClient);
+            return "nothing";
+
+            return hasClient.id;
           }
         }
       }
