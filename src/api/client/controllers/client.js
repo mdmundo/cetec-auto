@@ -6,6 +6,8 @@
 
 const { createCoreController } = require("@strapi/strapi").factories;
 const { parseMultipartData } = require("@strapi/utils");
+const differenceInSeconds = require("date-fns/differenceInSeconds");
+const startOfTomorrow = require("date-fns/startOfTomorrow");
 
 module.exports = createCoreController("api::client.client", ({ strapi }) => ({
   async profile(ctx) {
@@ -103,6 +105,19 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
     } catch (err) {
       console.error(err);
       throw new Error("Could'nt create client");
+    }
+  },
+  async time(ctx) {
+    try {
+      const secondsToTomorrow = differenceInSeconds(
+        startOfTomorrow(),
+        new Date()
+      );
+
+      return { secondsToTomorrow };
+    } catch (err) {
+      console.error(err);
+      throw new Error("Could'nt get time");
     }
   },
 }));

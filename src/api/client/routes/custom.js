@@ -9,6 +9,14 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/custom/time",
+      handler: "client.time",
+      config: {
+        auth: false,
+      },
+    },
+    {
+      method: "GET",
       path: "/custom/:code",
       handler: "client.findOneByCode",
     },
