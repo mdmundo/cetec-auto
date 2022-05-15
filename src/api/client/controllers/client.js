@@ -7,7 +7,9 @@
 const { createCoreController } = require("@strapi/strapi").factories;
 const { parseMultipartData } = require("@strapi/utils");
 const differenceInSeconds = require("date-fns/differenceInSeconds");
+const startOfToday = require("date-fns/startOfToday");
 const startOfTomorrow = require("date-fns/startOfTomorrow");
+const formatISO = require("date-fns/formatISO");
 
 module.exports = createCoreController("api::client.client", ({ strapi }) => ({
   async profile(ctx) {
@@ -114,7 +116,11 @@ module.exports = createCoreController("api::client.client", ({ strapi }) => ({
         new Date()
       );
 
-      return { secondsToTomorrow };
+      return {
+        secondsToTomorrow,
+        today: formatISO(startOfToday()),
+        tomorrow: formatISO(startOfTomorrow()),
+      };
     } catch (err) {
       console.error(err);
       throw new Error("Could'nt get time");
